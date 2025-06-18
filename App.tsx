@@ -5,7 +5,7 @@ export default function App() {
   return (
     <View style={styles.container}>
       <Text>Ye youssef rak m3allem </Text>
-      <Text>Kammaltou stage</Text>
+      <Text>Devops</Text>
       <StatusBar style="auto" />
     </View>
   );
