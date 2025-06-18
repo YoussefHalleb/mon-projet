@@ -40,6 +40,13 @@ jobs:
         run: |
           curl -o app-release.aab "$BUILD_URL"
 
+      - name: Create git tag
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git tag v${{ env.BUILD_NUM }}
+          git push origin v${{ env.BUILD_NUM }}
+
       - name: Upload AAB to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
