@@ -23,7 +23,12 @@ jobs:
       - name: Install EAS CLI
         run: npm install -g eas-cli
 
-      - name: Build APK with EAS
-        run: eas build --platform android --profile preview --non-interactive
+      - name: Get build number from commit count
+        id: build_number
+        run: |
+          echo "BUILD_NUM=$(git rev-list --count HEAD)" >> $GITHUB_ENV
+
+      - name: Build with EAS and dynamic message
+        run: eas build --platform android --profile production --non-interactive --message "Build #${{ env.BUILD_NUM }}"
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
