@@ -30,14 +30,10 @@ jobs:
 
       - name: Build with EAS and dynamic message
         run: >
-        eas build --platform android
-        --profile production
-        --non-interactive
-        --message "Build #${{ env.BUILD_NUM }}"
-        --wait
-        --output=./app-release.aab
+          eas build --platform android --profile production --non-interactive --message "Build #${{ env.BUILD_NUM }}" --wait --output=./app-release.aab
+
         env:
-         EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
