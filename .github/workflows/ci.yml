@@ -28,22 +28,27 @@ jobs:
         run: |
           echo "BUILD_NUM=$(git rev-list --count HEAD)" >> $GITHUB_ENV
 
-      - name: Build with EAS and dynamic message
-        run: >
-          eas build --platform android --profile production --non-interactive --message "Build #${{ env.BUILD_NUM }}" --wait --output=./app-release.aab
-
+      - name: Start EAS Build
+        id: eas_build
+        run: |
+          BUILD_URL=$(eas build --platform android --profile production --non-interactive --message "Build #${{ env.BUILD_NUM }}" --json | jq -r '.[0].artifacts.buildUrl')
+          echo "BUILD_URL=$BUILD_URL" >> $GITHUB_ENV
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Create GitHub Release
+      - name: Download .aab file
+        run: |
+          curl -o app-release.aab "$BUILD_URL"
+
+      - name: Upload AAB to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ env.BUILD_NUM }}
           name: Release v${{ env.BUILD_NUM }}
           body: |
-            ✅ Nouveau build Expo Android
-            🔢 Numéro : Build #${{ env.BUILD_NUM }}
-            🧱 Généré via GitHub Actions CI/CD
-          files: ./app-release.aab
+            ✅ Build #${{ env.BUILD_NUM }}
+            📦 Android AAB
+            🔗 Expo build cloud
+          files: app-release.aab
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
